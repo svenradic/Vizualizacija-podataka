@@ -1,0 +1,85 @@
+{
+    "sales_data": [
+      {
+        "month": "January",
+        "sales": 5000,
+        "expenses": 3000,
+        "profit": 2000
+      },
+      {
+        "month": "February",
+        "sales": 5500,
+        "expenses": 3200,
+        "profit": 2300
+      },
+      {
+        "month": "March",
+        "sales": 6000,
+        "expenses": 3400,
+        "profit": 2600
+      },
+      {
+        "month": "April",
+        "sales": 6200,
+        "expenses": 3600,
+        "profit": 2600
+      },
+      {
+        "month": "May",
+        "sales": 6700,
+        "expenses": 3800,
+        "profit": 2900
+      },
+      {
+        "month": "June",
+        "sales": 7000,
+        "expenses": 4000,
+        "profit": 3000
+      },
+      {
+        "month": "July",
+        "sales": 7500,
+        "expenses": 4200,
+        "profit": 3300
+      },
+      {
+        "month": "August",
+        "sales": 8000,
+        "expenses": 4400,
+        "profit": 3600
+      },
+      {
+        "month": "September",
+        "sales": 8500,
+        "expenses": 4600,
+        "profit": 3900
+      },
+      {
+        "month": "October",
+        "sales": 9000,
+        "expenses": 4800,
+        "profit": 4200
+      },
+      {
+        "month": "November",
+        "sales": 9500,
+        "expenses": 5000,
+        "profit": 4500
+      },
+      {
+        "month": "December",
+        "sales": 10000,
+        "expenses": 5200,
+        "profit": 4800
+      }
+    ],
+    "categories": [
+      "sales",
+      "expenses",
+      "profit"
+    ],
+    "company": "TechCorp",
+    "year": 2025
+  }
+
+  
