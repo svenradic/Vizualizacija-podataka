@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      var height = 500;
+      var width = 500;
+      var circleCord = [
+        { x: 100, y: 30, type: 1 },
+        { x: 250, y: 30, type: 2 },
+        { x: 400, y: 30, type: 3 },
+      ];
+      var rectCord = [
+        { x: 50, y: 200, c: "black" },
+        { x: 200, y: 200, c: "gray" },
+        { x: 350, y: 200, c: "blue" },
+      ];
+      var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("height", height)
+        .attr("width", width);
+
+      var rect = svg
+        .selectAll("rect")
+        .data(rectCord)
+        .enter()
+        .append("rect")
+        .attr("x", function (d) {
+          return d.x;
+        })
+        .attr("y", function (d) {
+          return d.y;
+        })
+        .attr("width", 100)
+        .attr("height", 200)
+        .attr("fill", function (d) {
+          return d.c;
+        })
+        .attr("stroke", "black");
+      var circles = svg
+        .selectAll("circle")
+        .data(circleCord)
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+          return d.x;
+        })
+        .attr("cy", function (d) {
+          return d.y;
+        })
+        .attr("r", 20)
+        .attr("fill", "red")
+        .attr("stroke", "black");
+      circles
+        .transition()
+        .duration(2000)
+        .attr("cy", function (d) {
+          return d.y + 150;
+        })
+        .transition()
+        .duration(2000)
+        .attr("cy", function (d) {
+          if (d.type == 1) return d.y + 150;
+          else if (d.type == 2) return d.y + 100;
+          else return d.y + 200;
+        })
+        .transition()
+        .duration(2000)
+        .attr("cy", function (d) {
+          if (d.type == 2 || d.type == 1) return d.y + 150;
+          else return d.y + 220;
+        })
+        .transition()
+        .duration(2000)
+        .attr("cy", function (d) {
+          if (d.type == 1) return d.y + 150;
+          else if (d.type == 2) return d.y + 120;
+          else return d.y + 240;
+        })
+        .transition()
+        .duration(2000)
+        .attr("cy", function (d) {
+          if (d.type == 2 || d.type == 1) return d.y + 150;
+          else return d.y + 260;
+        });
+    </script>
+  </body>
+</html>

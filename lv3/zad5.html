@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+<body>
+  <script>
+    var svgWidth = 600;
+    var svgHeight = 600;
+
+    var svg = d3.select("body")
+                .append("svg")
+                .attr("width", svgWidth)
+                .attr("height", svgHeight)
+                .style("border", "1px solid black");
+
+    var centerX = svgWidth / 2;
+    var centerY = svgHeight / 2;
+
+    svg.append("circle")
+       .attr("cx", centerX)
+       .attr("cy", centerY)
+       .attr("r", 50)
+       .style("fill", "yellow");
+
+    var planetsData = [
+      { distance: 100, radius: 10, color: "gray", speed: 5000 },  
+      { distance: 150, radius: 15, color: "orange", speed: 7000 }, 
+      { distance: 200, radius: 20, color: "blue", speed: 10000 },  
+      { distance: 250, radius: 15, color: "red", speed: 15000 }    
+    ];
+
+    var planets = svg.selectAll(".planet")
+                     .data(planetsData)
+                     .enter()
+                     .append("g")
+                     .attr("class", "planet");
+
+    planets.append("circle")
+           .attr("cx", centerX)
+           .attr("cy", centerY)
+           .attr("r", d => d.distance)
+           .style("fill", "none")
+           .style("stroke", "white")
+           .style("stroke-dasharray", "4 4");
+
+    var planetCircles = planets.append("circle")
+                               .attr("r", d => d.radius)
+                               .attr("cx", d => centerX + d.distance)
+                               .attr("cy", centerY)
+                               .style("fill", d => d.color);
+
+    function rotatePlanets() {
+      planetCircles.each(function(d, i) {
+        d3.select(this)
+          .transition()
+          .duration(d.speed)
+          .ease(d3.easeLinear)
+          .attrTween("transform", function() {
+            return d3.interpolateString(
+              `rotate(0, ${centerX}, ${centerY})`,
+              `rotate(360, ${centerX}, ${centerY})`
+            );
+          })
+          .on("end", rotatePlanets); 
+      });
+    }
+
+    rotatePlanets();
+  </script>
+</body>
+</html>
