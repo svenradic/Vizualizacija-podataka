@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="http://d3js.org/topojson.v1.min.js"></script>
+        <title>Document</title>
+    </head>
+    <body>
+    <script>
+        window.onload = function() {
+            countyData = [
+                {name: "Dubrovacko-Neretvanska", popPerSqm: 6 },
+                {name: "Å ibensko-Kninska", popPerSqm: 32},
+                {name: "Splitsko-Dalmatinska", popPerSqm: 93},
+                {name: "Zadarska", popPerSqm: 45},
+                {name: "Krapinsko-Zagorska", popPerSqm: 97},
+                {name: "Karlovacka", popPerSqm: 30},
+                {name: "Licko-Senjska", popPerSqm: 8},
+                {name: "Primorsko-Goranska", popPerSqm: 73},
+                {name: "Sisacko-Moslavacka", popPerSqm: 30},
+                {name: "Zagrebacka", popPerSqm: 100},
+                {name: "Grad Zagreb", popPerSqm: 1204},
+                {name: "Istarska", popPerSqm: 70},
+                {name: "Brodsko-Posavska", popPerSqm: 62},
+                {name: "Osjecko-Baranjska", popPerSqm: 60},
+                {name: "Vukovarsko-Srijemska", popPerSqm: 56},
+                {name: "Viroviticko-Podravska", popPerSqm: 33},
+                {name: "Bjelovarska-Bilogorska", popPerSqm: 37},
+                {name: "KoprivniÄko-KriÅ¾evaÄka", popPerSqm: 56},
+                {name: "Medimurska", popPerSqm: 143},
+                {name: "VaraÅ¾dinska", popPerSqm: 125}
+            ];
+
+            var colorScale = d3.scale.log()
+                .domain([d3.min(countyData, function(d) { return d.popPerSqm}), d3.max(countyData, function(d) { return d.popPerSqm})])
+                .range(["lightblue", "darkblue"]);
+
+            var div = document.getElementById("zupanija");
+            var width = 960,
+            height = 700;
+            
+            var projection = d3.geo.mercator()
+                .center([0, 10])
+                .scale(6000)
+                .translate([17600, 4500])
+                .rotate([-180, 0]);
+            
+            var path = d3.geo.path()
+                .projection(projection);
+            
+            var svg = d3.select("body").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .style("background", "white")
+                .call(d3.behavior.zoom().scaleExtent([1, 8])
+                .on("zoom", zoom))
+                .append("g");
+
+            
+            d3.json("cro_regv3.json", function(error, cro) {
+                var data = topojson.feature(cro, cro.objects.layer1);
+
+                data.features.forEach(function(feature) {
+                var county = countyData.find(function(d) {
+                    return d.name === feature.properties.name;
+                });
+                feature.properties.popPerSqm = county ? county.popPerSqm : null;
+            });
+
+                var states = svg.selectAll("path.county")
+                .data(data.features)
+                .enter()
+                .append("path")
+                .attr("class", "county")
+                .attr("id", function(d) { return d.id; })
+                .attr("d", path) .style("fill", "red")
+                .style("stroke", "gray")
+                .style("stroke-width", 1)
+                .style("stroke-opacity", 1)
+                .style("fill", function(d) {
+                    return colorScale(d.properties.popPerSqm);
+                })
+                .on("click", function(d) { clicked(d); })
+            });
+
+            function zoom(){
+                svg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            }
+
+            function clicked(d){
+                var centroid = path.centroid(d);
+                var a = centroid[0], b = centroid[1], c = 4, centered = d;
+
+                svg.selectAll("path")
+                    .classed("active", centered && function(d) { return d === centered; });
+                svg.transition()
+                    .duration(1000)
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + c + ")translate(" + -a + "," + -b + ")")
+                    .style("stroke-width", 1.5 / c + "px");
+                div.innerHTML = d.properties.name + "<br>Gustoca stanovnistva " + d.properties.popPerSqm + " po km<sup>2</sup>";
+                a = width / 2;
+                b = height / 2;
+                c= 1;
+                centered = null;
+                svg.transition()
+                    .delay(5000)
+                    .duration(1000)
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")scale(" + c + ")translate(" + -a + "," + -b + ")")
+                    .style("stroke-width", 1.5 / c + "px")
+                    .each('end', function () {
+                        d3.select("#zupanija")
+                            .html("");
+                });
+            }
+        }
+    </script>
+    <div id="zupanija" style="float: right"></div>
+    </body>
+</html>
